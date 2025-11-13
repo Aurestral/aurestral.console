@@ -1,0 +1,193 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Courier New', monospace;
+}
+
+body {
+    background-color: #0a0a0a;
+    color: #d4af37;
+    height: 100vh;
+    overflow: hidden;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.03) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.03) 0%, transparent 20%);
+    display: flex;
+    flex-direction: column;
+}
+
+/* -------------------------------
+   RESPONSIVE CONTAINER
+   ------------------------------- */
+.terminal-container {
+    width: 100%;
+    height: 100vh;
+    padding: clamp(10px, 2vw, 20px); /* Scales padding */
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 1.5vw, 15px);
+}
+
+/* -------------------------------
+   HEADER (Logo)
+   ------------------------------- */
+.header {
+    padding-bottom: clamp(5px, 1vw, 10px);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo {
+    font-size: clamp(18px, 5vw, 28px); /* Scales with screen */
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.7);
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+.logo::after {
+    content: "█";
+    animation: blink 1s infinite;
+    margin-left: 5px;
+    color: #d4af37;
+    font-size: inherit;
+}
+
+/* -------------------------------
+   TERMINAL WINDOW
+   ------------------------------- */
+.terminal {
+    flex: 1;
+    min-height: 0; /* Crucial for flex shrink */
+    overflow-y: auto;
+    padding: clamp(8px, 1.5vw, 12px);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 5px;
+    background-color: rgba(10, 10, 10, 0.8);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+    position: relative;
+    font-size: clamp(13px, 3.5vw, 16px); /* Responsive text */
+    line-height: 1.5;
+}
+
+.terminal::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #d4af37, transparent);
+}
+
+.output-line {
+    margin-bottom: clamp(3px, 0.8vw, 6px);
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.module {
+    color: #d4af37;
+    margin-left: 20px;
+    font-size: 0.95em;
+}
+
+/* -------------------------------
+   PROMPT / INPUT
+   ------------------------------- */
+.prompt {
+    display: flex;
+    align-items: center;
+    gap: clamp(6px, 1.2vw, 10px);
+    padding: clamp(6px, 1vw, 10px) 0;
+}
+
+.prompt-text {
+    color: #d4af37;
+    font-size: clamp(14px, 4vw, 18px);
+    white-space: nowrap;
+}
+
+.command-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #d4af37;
+    font-size: clamp(13px, 3.8vw, 16px);
+    flex-grow: 1;
+    caret-color: #d4af37;
+    min-width: 0; /* Allows flex shrink */
+}
+
+.command-input::placeholder {
+    color: rgba(212, 175, 55, 0.5);
+}
+
+/* -------------------------------
+   COLORS (Gold Only)
+   ------------------------------- */
+.success, .module, .output-line {
+    color: #d4af37 !important;
+}
+
+.error {
+    color: #f44336;
+}
+
+/* -------------------------------
+   SCAN-LINE (Smooth, Responsive)
+   ------------------------------- */
+.scan-line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(212, 175, 55, 0.5),
+        transparent
+    );
+    animation: scan 8s linear infinite;
+    pointer-events: none;
+    transform: translateY(-50%);
+    backface-visibility: hidden;
+    will-change: top;
+}
+
+@keyframes scan {
+    0%   { top: 0%; }
+    100% { top: 100%; }
+}
+
+/* -------------------------------
+   SCROLLBAR (Responsive)
+   ------------------------------- */
+.terminal::-webkit-scrollbar {
+    width: clamp(6px, 1.5vw, 10px);
+}
+
+.terminal::-webkit-scrollbar-track {
+    background: rgba(212, 175, 55, 0.1);
+    border-radius: 4px;
+}
+
+.terminal::-webkit-scrollbar-thumb {
+    background: rgba(212, 175, 55, 0.3);
+    border-radius: 4px;
+}
+
+.terminal::-webkit-scrollbar-thumb:hover {
+    background: rgba(212, 175, 55, 0.5);
+}
+
+/* -------------------------------
+   BLINK CURSOR
+   ------------------------------- */
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
