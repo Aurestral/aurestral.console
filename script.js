@@ -13,9 +13,9 @@ const state = {
 /* ---------- CONFIG (localStorage) --------------------------- */
 const STORAGE_KEY = 'aurestral_config';
 let config = {
-    provider: 'groq',               // default – user can change
+    provider: 'openai',               // default – user can change
     groqApiKey: '',
-    model: 'gpt-oss-120b'           // forced for Groq
+    model: 'openai/gpt-oss-120b'           // forced for Groq
 };
 
 function loadConfig() {
@@ -61,7 +61,7 @@ const commands = {
             state.ascentExecuted = true;
             state.inChatMode = true;
             state.chatHistory = [{ role: 'system', content: SYSTEM_PROMPT }];
-            addOutput("**AEM1X120B** chat mode");
+            addOutput("AEM1X120B chat mode");
             addOutput("Aurestral: Ready when you are, sir.");
             commandInput.placeholder = "Chat with Aurestral… (type `descent` to exit)";
             return "";
@@ -99,7 +99,7 @@ const commands = {
             config.provider = 'groq';
             saveConfig();
             return `Groq API key saved (${config.groqApiKey.slice(0,8)}…).
-Use **aurestral.console(ascent, aem1x120b)** to start chatting with gpt-oss-120b.`;
+Use aurestral.console(ascent, aem1x120b) to start chatting with gpt-oss-120b.`;
         },
         requiresAscent: false
     },
@@ -304,3 +304,4 @@ window.addEventListener('load', () => {
    
 
 });
+
