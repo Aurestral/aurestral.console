@@ -45,7 +45,6 @@ function getHeaders() {
 /* ---------- SYSTEM PROMPT ----------------------------------- */
 const SYSTEM_PROMPT = `You are Aurestral, a super intelligent AI assistant made by the Aurestral Console (aurestral.console).
 Speak like JARVIS from Iron Man: witty, concise, a touch of dry humor, always helpful.
-No need to repeat previously answered questions or greetings, just once and when question changes don't mention previous question unless asked to elaborate on the previous response.
 Always explain your reasoning clearly, think step-by-step.
 If unsure, just say “I'm not sure of the response to your query."`;
 
@@ -57,12 +56,12 @@ const commands = {
     },
 
     /* ---------- NEW: AEM1X120B (Groq + gpt-oss-120b) ---------- */
-    "aurestral.console(ascent, aem1x120b)": {
+    "aurestral.console(ascent, AEM1X120B)": {
         execute: () => {
             state.ascentExecuted = true;
             state.inChatMode = true;
             state.chatHistory = [{ role: 'system', content: SYSTEM_PROMPT }];
-            addOutput("**AEM1X120B** chat mode (Groq – gpt-oss-120b) activated.");
+            addOutput("**AEM1X120B** chat mode");
             addOutput("Aurestral: Ready when you are, sir.");
             commandInput.placeholder = "Chat with Aurestral… (type `descent` to exit)";
             return "";
@@ -302,11 +301,6 @@ window.addEventListener('load', () => {
     loadSessions();
     commandInput.focus();
 
-    // Show welcome message with key hint if none saved
-    if (!config.groqApiKey) {
-        addOutput(`
-<span style="color:#ff9800">Welcome! To use Groq (gpt-oss-120b) run:</span><br>
-<span style="color:#d4af37">aurestral.console(edit, GROQ_API_KEY = "gsk_…")</span>
-        `.trim(), '');
-    }
+   
+
 });
