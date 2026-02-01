@@ -8,7 +8,7 @@
 body {
     background-color: #0a0a0a;
     color: #d4af37;
-    height: 100vh;
+    height: var(--vv-height, 100dvh);
     overflow: hidden;
     background-image: 
         radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.03) 0%, transparent 20%),
@@ -22,8 +22,8 @@ body {
    ------------------------------- */
 .terminal-container {
     width: 100%;
-    height: 100vh;
-    padding: clamp(10px, 2vw, 20px); /* Scales padding */
+    height: var(--vv-height, 100dvh);
+    padding: clamp(10px, 2vw, 20px);
     display: flex;
     flex-direction: column;
     gap: clamp(8px, 1.5vw, 15px);
@@ -103,6 +103,8 @@ body {
     align-items: center;
     gap: clamp(6px, 1.2vw, 10px);
     padding: clamp(6px, 1vw, 10px) 0;
+    padding-bottom: max(clamp(6px, 1vw, 10px), env(safe-area-inset-bottom));
+    flex-shrink: 0;
 }
 
 .prompt-text {
@@ -116,10 +118,10 @@ body {
     border: none;
     outline: none;
     color: #d4af37;
-    font-size: clamp(13px, 3.8vw, 16px);
+    font-size: clamp(16px, 3.8vw, 16px); /* 16px min blocks iOS zoom-on-focus */
     flex-grow: 1;
     caret-color: #d4af37;
-    min-width: 0; /* Allows flex shrink */
+    min-width: 0;
 }
 
 .command-input::placeholder {
@@ -182,6 +184,34 @@ body {
 
 .terminal::-webkit-scrollbar-thumb:hover {
     background: rgba(212, 175, 55, 0.5);
+}
+
+/* -------------------------------
+   MOBILE
+   ------------------------------- */
+@media (max-width: 600px) {
+    .terminal-container {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .header {
+        padding-bottom: 6px;
+    }
+
+    .terminal {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    /* hide scrollbar track on touch — wastes horizontal space */
+    .terminal::-webkit-scrollbar {
+        width: 0;
+    }
+
+    .scan-line {
+        display: none;
+    }
 }
 
 /* -------------------------------
