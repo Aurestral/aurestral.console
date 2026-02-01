@@ -2,12 +2,11 @@
    Netlify Edge Function – Groq Streaming Proxy
    Deploy path: netlify/edge-functions/groq-proxy.js
    Callable at: /.netlify/functions/groq-proxy
-   Env var required: GROQ_API_KEY (set in Netlify dashboard)
    ============================================================== */
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
-export default async function groqProxy(request) {
+export default async function groqProxy(request, context) {
     /* ----- only POST allowed ----- */
     if (request.method !== "POST") {
         return new Response("Method not allowed", { status: 405 });
