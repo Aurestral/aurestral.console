@@ -3,7 +3,7 @@
    ============================================================== */
 
 /* ---------- STATE ------------------------------------------- */
-const DEFAULT_SYSTEM_PROMPT = `You are Aurestral, a helpful assistant made by the Aurestral.Console.`;
+const DEFAULT_SYSTEM_PROMPT = `You are Aurestral, a helpful AI assistant made by the Aurestral.Console.`;
 
 const state = {
     inChatMode:   false,
@@ -183,3 +183,18 @@ commandInput.addEventListener("keydown", e => {
 window.addEventListener("load", () => {
     commandInput.focus();
 });
+
+/* ---------- MOBILE KEYBOARD HANDLING ------------------------ */
+// visualViewport fires on every keyboard open/close/resize.
+// We write the current height as a CSS custom property so the
+// container can shrink above the keyboard without any layout jump.
+if (window.visualViewport) {
+    function onViewportResize() {
+        document.documentElement.style.setProperty(
+            "--vv-height",
+            window.visualViewport.height + "px"
+        );
+    }
+    window.visualViewport.addEventListener("resize", onViewportResize);
+    onViewportResize(); // set initial value immediately
+}
