@@ -4,16 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>aurestral.console</title>
+    
+    <!-- KaTeX for LaTeX rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" 
+          integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" 
+          crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" 
+            integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" 
+            crossorigin="anonymous"></script>
+    
+    <!-- Main styles -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="terminal-container">
-        <div class="header"><div class="logo">aurestral.console</div></div>
+        <div class="header">
+            <div class="logo">aurestral.console</div>
+        </div>
+        
         <div class="terminal" id="terminal">
-            <div class="output-line">v/1.0</div>
+            <div class="output-line">v/1.0 — Enhanced with Voice & LaTeX</div>
             <div class="output-line"></div>
             <div class="scan-line"></div>
         </div>
+        
+        <!-- Voice controls (hidden by default) -->
+        <div id="voiceControls" class="voice-controls" style="display: none;">
+            <div class="voice-status">
+                <div id="speakingIndicator" class="speaking-indicator"></div>
+            </div>
+            <button id="micButton" class="mic-button">
+                <span class="mic-icon">🎙️</span>
+                <span class="mic-label">Push to Talk</span>
+            </button>
+        </div>
+        
         <div class="prompt">
             <span class="prompt-text">>>></span>
             <input type="text" class="command-input" id="commandInput"
