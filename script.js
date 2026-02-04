@@ -32,20 +32,20 @@ var AUDIO_EFFECTS = {
 function renderMarkdownWithLatex(text) {
     // First, protect LaTeX blocks from markdown processing
     var latexBlocks = [];
-    var protected = text.replace(/\$\$([\s\S]+?)\$\$/g, function(match, latex, offset) {
+    var processedText = text.replace(/\$\$([\s\S]+?)\$\$/g, function(match, latex, offset) {
         var id = "__LATEX_BLOCK_" + latexBlocks.length + "__";
         latexBlocks.push({ type: 'block', latex: latex.trim() });
         return id;
     });
     
-    protected = protected.replace(/\$([^\$\n]+?)\$/g, function(match, latex, offset) {
+    processedText = processedText.replace(/\$([^\$\n]+?)\$/g, function(match, latex, offset) {
         var id = "__LATEX_INLINE_" + latexBlocks.length + "__";
         latexBlocks.push({ type: 'inline', latex: latex.trim() });
         return id;
     });
 
     // Basic markdown rendering
-    var html = protected
+    var html = processedText
         // Headers
         .replace(/^### (.*$)/gim, '<h3>$1</h3>')
         .replace(/^## (.*$)/gim, '<h2>$1</h2>')
