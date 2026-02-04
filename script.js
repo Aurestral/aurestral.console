@@ -149,52 +149,105 @@ function initVoiceRecognition() {
 }
 
 /* ---------- TEXT-TO-SPEECH WITH EFFECTS ------------------ */
-function speakWithEffects(text) {
-    if (state.isSpeaking) {
-        state.synthesis.cancel();
-    }
+var audioContext = null;
+var currentSource = null;
+var audioElement = null;
+var isPaused = false;
 
+function initAudioContext() {
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    return audioContext;
+}
+
+function createReverbEffect(context) {
+    // Create convolver for reverb
+    var convolver = context.createConvolver();
+    
+    // Generate impulse response (simple reverb)
+    var rate = context.sampleRate;
+    var length = rate * 2; // 2 second reverb
+    var impulse = context.createBuffer(2, length, rate);
+    var impulseL = impulse.getChannelData(0);
+    var impulseR = impulse.getChannelData(1);
+    
+    for (var i = 0; i < length; i++) {
+        var decay = Math.exp(-i / (rate * 0.5)); // Decay over 0.5 seconds
+        impulseL[i] = (Math.random() * 2 - 1) * decay;
+        impulseR[i] = (Math.random() * 2 - 1) * decay;
+    }
+    
+    convolver.buffer = impulse;
+    return convolver;
+}
+
+function createDelayEffect(context) {
+    var delay = context.createDelay();
+    delay.delayTime.value = 0.07; // 70ms delay (matching Python version)
+    
+    var feedback = context.createGain();
+    feedback.gain.value = 0.5; // 50% feedback (matching Python decay)
+    
+    delay.connect(feedback);
+    feedback.connect(delay);
+    
+    return { delay: delay, feedback: feedback };
+}
+
+function speakWithEffects(text) {
     // Remove markdown and LaTeX for TTS
     var cleanText = text
-        .replace(/\$\$[\s\S]+?\$\$/g, '') // Remove block LaTeX
-        .replace(/\$[^\$\n]+?\$/g, '')    // Remove inline LaTeX
-        .replace(/```[\s\S]+?```/g, '')    // Remove code blocks
-        .replace(/`[^`]+`/g, '')           // Remove inline code
-        .replace(/[*_#\[\]()]/g, '')       // Remove markdown symbols
-        .replace(/<[^>]+>/g, '')           // Remove HTML tags
+        .replace(/\$\$[\s\S]+?\$\$/g, '')
+        .replace(/\$[^\$\n]+?\$/g, '')
+        .replace(/```[\s\S]+?```/g, '')
+        .replace(/`[^`]+`/g, '')
+        .replace(/[*_#\[\]()]/g, '')
+        .replace(/<[^>]+>/g, '')
         .trim();
 
     if (!cleanText) return;
 
-    var utterance = new SpeechSynthesisUtterance(cleanText);
-    
-    // Apply audio effects
-    if (AUDIO_EFFECTS.enabled) {
-        utterance.pitch = AUDIO_EFFECTS.pitch;
-        utterance.rate = AUDIO_EFFECTS.rate;
-        utterance.volume = AUDIO_EFFECTS.volume;
+    // Stop any current speech
+    if (state.isSpeaking) {
+        stopTTS();
     }
 
-    // Try to use a more robotic/AI voice if available
+    var utterance = new SpeechSynthesisUtterance(cleanText);
+    
+    // Configure voice settings to match en-CA-LiamNeural characteristics
+    utterance.rate = 0.85;  // Slower (matching -5% from edge-tts + slowing effect)
+    utterance.pitch = 0.9;  // Slightly lower pitch
+    utterance.volume = 1.0;
+
+    // Try to find a Canadian or similar voice
     var voices = state.synthesis.getVoices();
     var preferredVoice = voices.find(function(v) {
-        return v.name.includes('Google') || 
-               v.name.includes('Microsoft') ||
-               v.name.includes('Samantha');
+        return v.lang.startsWith('en-CA') || v.name.includes('Liam');
+    }) || voices.find(function(v) {
+        return v.lang.startsWith('en-US') && v.name.includes('Male');
+    }) || voices.find(function(v) {
+        return v.name.includes('Google') || v.name.includes('Microsoft');
     }) || voices[0];
     
     if (preferredVoice) {
         utterance.voice = preferredVoice;
     }
 
+    isPaused = false;
+    
     utterance.onstart = function() {
         state.isSpeaking = true;
         updateSpeakingIndicator(true);
+        showTTSControl();
     };
 
     utterance.onend = function() {
         state.isSpeaking = false;
+        isPaused = false;
         updateSpeakingIndicator(false);
+        hideTTSControl();
+        
         // Auto-restart listening if in voice mode
         if (state.voiceMode && !state.isListening) {
             setTimeout(function() { startListening(); }, 500);
@@ -204,10 +257,65 @@ function speakWithEffects(text) {
     utterance.onerror = function(event) {
         console.error('Speech synthesis error:', event);
         state.isSpeaking = false;
+        isPaused = false;
         updateSpeakingIndicator(false);
+        hideTTSControl();
     };
 
     state.synthesis.speak(utterance);
+    state.currentUtterance = utterance;
+}
+
+function toggleTTS() {
+    if (!state.synthesis) return;
+    
+    if (isPaused) {
+        state.synthesis.resume();
+        isPaused = false;
+        updateTTSControlIcon(false);
+    } else {
+        state.synthesis.pause();
+        isPaused = true;
+        updateTTSControlIcon(true);
+    }
+}
+
+function stopTTS() {
+    if (state.synthesis) {
+        state.synthesis.cancel();
+    }
+    state.isSpeaking = false;
+    isPaused = false;
+    updateSpeakingIndicator(false);
+    hideTTSControl();
+}
+
+function showTTSControl() {
+    var control = document.getElementById('ttsControl');
+    if (control) {
+        control.style.display = 'flex';
+        updateTTSControlIcon(false);
+    }
+}
+
+function hideTTSControl() {
+    var control = document.getElementById('ttsControl');
+    if (control) {
+        control.style.display = 'none';
+    }
+}
+
+function updateTTSControlIcon(paused) {
+    var icon = document.querySelector('.tts-icon');
+    var button = document.getElementById('ttsControl');
+    if (icon && button) {
+        icon.textContent = paused ? '▶' : '⏸';
+        if (paused) {
+            button.classList.add('paused');
+        } else {
+            button.classList.remove('paused');
+        }
+    }
 }
 
 /* ---------- UI UPDATES ------------------------------------ */
@@ -248,7 +356,6 @@ function showVoiceControls() {
             '</div>' +
             '<button id="micButton" class="mic-button">' +
             '<span class="mic-icon">🎙️</span>' +
-            '<span class="mic-label">Push to Talk</span>' +
             '</button>';
         
         document.querySelector('.terminal-container').insertBefore(
@@ -278,9 +385,7 @@ function startListening() {
 
 function toggleListening() {
     if (state.isSpeaking) {
-        state.synthesis.cancel();
-        state.isSpeaking = false;
-        updateSpeakingIndicator(false);
+        stopTTS();
         return;
     }
 
@@ -355,10 +460,7 @@ var commands = {
 /* ---------- EXIT CHAT --------------------------------------- */
 function exitChatMode() {
     // Stop any ongoing speech
-    if (state.isSpeaking) {
-        state.synthesis.cancel();
-        state.isSpeaking = false;
-    }
+    stopTTS();
 
     // Stop listening
     if (state.isListening && state.recognition) {
@@ -534,6 +636,12 @@ window.addEventListener("load", function() {
             var voices = speechSynthesis.getVoices();
             console.log('Available voices:', voices.map(function(v) { return v.name; }));
         });
+    }
+    
+    // Add TTS control button listener
+    var ttsControl = document.getElementById('ttsControl');
+    if (ttsControl) {
+        ttsControl.addEventListener('click', toggleTTS);
     }
 });
 
