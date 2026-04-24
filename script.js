@@ -18,7 +18,7 @@ var state = {
 
 /* ---------- CONFIG ------------------------------------------ */
 var PROXY_URL = "/.netlify/functions/groq-proxy";
-var MODEL     = "moonshotai/kimi-k2-instruct-0905";
+var MODEL     = "meta-llama/llama-4-scout-17b-16e-instruct";
 
 // Audio effects settings (similar to Python version)
 var AUDIO_EFFECTS = {
