@@ -404,9 +404,9 @@ var commands = {
             state.voiceMode   = false;
             state.chatHistory = [{ role: "system", content: state.systemPrompt }];
             hideVoiceControls();
-            addOutput("K2 chat mode activated (Groq - moonshotai/kimi-k2-instruct-0905).");
-            addOutput("Aurestral: Ready when you are, sir.");
-            commandInput.placeholder = "Chat with Aurestral… (type `descent` to exit)";
+            addOutput("K2 chat mode activated (legacy).");
+            addOutput("Aurestral: Ready when you are.");
+            commandInput.placeholder = "Chat...";
             return "";
         }
     },
@@ -426,7 +426,7 @@ var commands = {
 
             showVoiceControls();
             addOutput("🎙️ K2 voice mode activated!");
-            addOutput("Aurestral: Ready to listen, sir. Click the microphone or press it to speak.");
+            addOutput("Aurestral: Ready to listen. Click the microphone or press it to speak.");
             commandInput.placeholder = "Voice mode active (type `descent` to exit)";
             
             // Auto-start listening after a brief delay
