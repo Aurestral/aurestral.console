@@ -404,7 +404,7 @@ var commands = {
             state.voiceMode   = false;
             state.chatHistory = [{ role: "system", content: state.systemPrompt }];
             hideVoiceControls();
-            addOutput("K2 chat mode activated (legacy).");
+            addOutput("K2 chat mode activated (legacy)");
             addOutput("Aurestral: Ready when you are.");
             commandInput.placeholder = "Chat...";
             return "";
