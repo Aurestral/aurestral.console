@@ -1,5 +1,5 @@
 /* ==============================================================
-   Aurestral Console - Enhanced with Voice Mode
+   Aurestral Console
    ============================================================== */
 
 /* ---------- STATE ------------------------------------------- */
@@ -20,7 +20,7 @@ var state = {
 var PROXY_URL = "/.netlify/functions/groq-proxy";
 var MODEL     = "meta-llama/llama-4-scout-17b-16e-instruct";
 
-// Audio effects settings (similar to Python version)
+// Audio effects settings 
 var AUDIO_EFFECTS = {
     enabled: true,
     pitch: 0.95,        // Slightly lower pitch
@@ -215,7 +215,7 @@ function speakWithEffects(text) {
 
     var utterance = new SpeechSynthesisUtterance(cleanText);
     
-    // Configure voice settings to match en-CA-LiamNeural characteristics
+    // Configure voice settings
     utterance.rate = 0.85;  // Slower (matching -5% from edge-tts + slowing effect)
     utterance.pitch = 0.9;  // Slightly lower pitch
     utterance.volume = 1.0;
@@ -399,10 +399,6 @@ function toggleListening() {
 /* ---------- COMMANDS ---------------------------------------- */
 var commands = {
     
-    "secretsauce()": {
-        addOutput("Instead of just relying on atmospheric skimming, the long tether is made of conductive aluminum tape. As it cuts through Earth's magnetic field, it generates a natural electric current. This current creates a force called Lorentz drag that acts like an invisible brake, slowing the debris down even faster without needing heavy fuel.");
-
-
     "ascent(k2)": {
         execute: function() {
             state.inChatMode  = true;
@@ -430,7 +426,7 @@ var commands = {
             }
 
             showVoiceControls();
-            addOutput("🎙️ K2 voice mode activated!");
+            addOutput("K2 voice mode activated!");
             addOutput("Aurestral: Ready to listen. Click the microphone or press it to speak.");
             commandInput.placeholder = "Voice mode active (type `descent` to exit)";
             
