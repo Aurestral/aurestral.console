@@ -398,6 +398,11 @@ function toggleListening() {
 
 /* ---------- COMMANDS ---------------------------------------- */
 var commands = {
+    
+    "secretsauce()": {
+        addOutput("Instead of just relying on atmospheric skimming, the long tether is made of conductive aluminum tape. As it cuts through Earth's magnetic field, it generates a natural electric current. This current creates a force called Lorentz drag that acts like an invisible brake, slowing the debris down even faster without needing heavy fuel.");
+
+
     "ascent(k2)": {
         execute: function() {
             state.inChatMode  = true;
