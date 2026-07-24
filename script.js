@@ -18,7 +18,7 @@ var state = {
 
 /* ---------- CONFIG ------------------------------------------ */
 var PROXY_URL = "/.netlify/functions/groq-proxy";
-var MODEL     = "meta-llama/llama-4-scout-17b-16e-instruct";
+var MODEL     = "openai/gpt-oss-120b";
 
 // Audio effects settings 
 var AUDIO_EFFECTS = {
