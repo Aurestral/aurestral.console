@@ -455,6 +455,15 @@ var commands = {
 
             return "System prompt updated.";
         }
+    },
+
+    "vault": {
+        execute: function() {
+            addOutput("Opening Aurestral Vault...", "success");
+            // Redirect to the vault URL
+            window.location.href = "https://aurestral-vault.netlify.app";
+            return "";
+        }
     }
 };
 
